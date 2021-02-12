@@ -3,6 +3,7 @@ import { createCanvas, loadImage } from 'canvas';
 
 import { desaturate, redScale } from './filters/desaturate';
 import { hsl } from "./filters/hsl";
+import { colorize } from "./filters/colorize";
 
 export async function getImageString(){
 
@@ -20,13 +21,15 @@ export async function getImageString(){
         1000
     );
 
-    const greyed = desaturate(canvas, {r: 1.1, g: 0, b: 1.1});
-    // const redded = redScale(canvas);
-    const adjusted = hsl(greyed);
+    const greyed = desaturate(canvas);
+    // const redded = redScale(greyed);
+    // const adjusted = hsl(greyed);
+    const colorized = colorize(greyed);
 
     // var buffer = canvas.toBuffer();
     // var buffer = redded.toBuffer();
-    var buffer = greyed.toBuffer();
+    var buffer = colorized.toBuffer();
+    // var buffer = colorized.toBuffer();
 
     return buffer;
 

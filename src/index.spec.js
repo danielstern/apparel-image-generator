@@ -1,11 +1,12 @@
 import express from "express";
 import { getImageString } from ".";
+import path from "path";
 
 const app = new express();
 
 app.listen(7779, console.info("Dev server listening on 7779"));
 
-app.use("*", async(req,res)=>{
+app.use("/test", async(req,res)=>{
 
     const img = await getImageString();
 
@@ -16,5 +17,11 @@ app.use("*", async(req,res)=>{
 
     res.end(img); 
 
+
+});
+
+app.use('/', (req, res) => {
+
+    res.sendFile(path.join(__dirname,"index.spec.html"));
 
 });

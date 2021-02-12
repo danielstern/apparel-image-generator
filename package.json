@@ -11,13 +11,15 @@
   "license": "ISC",
   "dependencies": {
     "canvas": "^2.6.1",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "hex-rgb": "^4.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.16",
     "@babel/core": "^7.12.16",
     "@babel/node": "^7.12.16",
     "@babel/preset-env": "^7.12.16",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
+    "serve-index": "^1.9.1"
   }
 }
