@@ -1,10 +1,10 @@
 {
-  "name": "image",
+  "name": "node-image-tool",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon --exec \"babel-node index.spec\"",
+    "test": "nodemon --exec \"babel-node src/index.spec\"",
     "test2": "babel-node index.spec"
   },
   "author": "",
