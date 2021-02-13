@@ -1,0 +1,17 @@
+{
+    "shirts":{
+        "TSHIRT":{
+            "url":"shirt-red.png",
+            "centerX": 500,
+            "centerY": 500
+        }
+    },
+    "logos":{
+        "CLEVER":{
+            "url":"pepe-clever-pre.png"
+        },
+        "SAD":{
+            "url":"very-sad-pepe-pre.png"
+        }
+    }
+}

@@ -1,0 +1,68 @@
+<head>
+<style>
+    td {
+
+        border: 1px solid green;
+
+    }
+</style>
+</head>
+<body>
+    
+    <h1>
+        Image Generator API
+    </h1>
+
+    <h2>Public Routes</h2>
+
+    <div>
+        <!-- <code><h3>/generate[?argument1=a&argument2=b&...]</h3></code> -->
+        <a href="/generate/0,255,0/CLEVER"><code><h3>/generate/:color/:logo <button>GO TO EXAMPLE</button></h3></code> </a>
+        <p>
+            Generates a colorized image based on the provided criteria
+        </p>
+        <div>
+            <table>
+                <tr>
+                    <td>
+                        Parameter Name
+                    </td>
+                    <td>
+                        Description
+                    </td>
+                    <td>
+                        Example
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Color
+                    </td>
+                    <td>
+                        The RGB color of the background image seperated by commas.
+                    </td>
+                    <td>
+                        <code>/generate/0,0,255/default</code>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Logo
+                    </td>
+                    <td>
+                        <p>
+                        The code of the logo appearing on the clothing.
+                        </p>
+                        <p>
+                            Valid options: 
+                            <!--%VALIDLOGOS%-->
+                        </p>
+                    </td>
+                    <td>
+                        <code>/generate/0,255,0/CLEVER</code>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "nodemon --exec \"babel-node src/index.spec\"",
-    "test2": "babel-node index.spec"
+    "start" : "nodemon --exec \"babel-node src\""
   },
   "author": "",
   "license": "ISC",

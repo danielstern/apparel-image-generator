@@ -1,36 +1,48 @@
+import express from "express";
+import { getGeneratedImageBuffer } from "./tools/generateImage";
 import path from "path";
-import { createCanvas, loadImage } from 'canvas';
+import fs from 'fs';
 
-import { desaturate, redScale } from './filters/desaturate';
-import { hsl } from "./filters/hsl";
-import { colorize } from "./filters/colorize";
+import config from '../config';
 
-export async function getImageString(){
+const PORT = process.env.PORT || 7780;
+const app = new express();
+const validLogos = Object.keys(config.logos);
 
-    let canvas = createCanvas(1000, 1000);
+app.listen(PORT, console.info("Image generation server listening on " + PORT));;
 
-    const ctx=canvas.getContext("2d");
+app.use("/generate/:color/:logo", async(req,res)=>{
 
-    let pepeImageObj = await loadImage(path.resolve(__dirname,'..','assets','shirt-red.png'));
+    const [red,green,blue] = req.params.color.split(',');
 
-    ctx.drawImage(
-        pepeImageObj, 
-        0,
-        0,
-        1000 ,
-        1000
-    );
+    if (red === undefined || blue === undefined || green === undefined) {
 
-    const greyed = desaturate(canvas);
-    // const redded = redScale(greyed);
-    // const adjusted = hsl(greyed);
-    const colorized = colorize(greyed);
+        res.send("<h2>Error: Invalid color selection. Define color as RGB seperated by commas, e.g. 4,25,0");
+        return;
+    }
 
-    // var buffer = canvas.toBuffer();
-    // var buffer = redded.toBuffer();
-    var buffer = colorized.toBuffer();
-    // var buffer = colorized.toBuffer();
+    if (!req.params.logo.toUpperCase || !validLogos.includes(req.params.logo.toUpperCase())) {
 
-    return buffer;
+        res.send("<h2>Error: Invalid logo selection. Valid logos:" + validLogos.join(", "));
+        return;
+    }
 
-}
+    const img = await getGeneratedImageBuffer({red,green,blue}, req.params.logo.toUpperCase());
+
+    res.writeHead(200, {
+        'Content-Type': 'image/png',
+        'Content-Length': img.length
+    });
+
+    res.end(img); 
+
+
+});
+
+app.use('/', (req, res) => {
+
+    const index = fs.readFileSync(path.join(__dirname,"..","public","index.html"), "utf8");
+    res.send(index
+        .replace(`<!--%VALIDLOGOS%-->`, validLogos.join(', ')));
+
+});
