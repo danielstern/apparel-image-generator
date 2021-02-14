@@ -1,8 +1,9 @@
 import express from "express";
-import { getGeneratedImageBuffer } from "./tools/generateImage";
+import { sample } from "lodash";
 import path from "path";
 import fs from 'fs';
 
+import { getGeneratedImageBuffer } from "./tools/generateImage";
 import colors from '../config/colors.json';
 import apparel from '../config/apparel.json';
 import hexRgb from "hex-rgb";
@@ -10,12 +11,13 @@ import hexRgb from "hex-rgb";
 const PORT = process.env.PORT || 7780;
 const app = new express();
 const validLogos = Object.keys(apparel.logos);
+const validApparel = Object.keys(apparel.apparelTypes);
 
 function colorSearch(color) {
 
     for (let key in colors) {
 
-        if (key.toUpperCase().replace(' ', '') === color.toUpperCase()) {
+        if (key.toUpperCase().replaceAll(' ', '') === color.toUpperCase()) {
 
             return colors[key];
 
@@ -39,9 +41,9 @@ app.use("/color-index", async(_req, res)=>{
 
 });
 
-app.use("/generate/:color/:logo", async(req,res)=>{
+app.use("/generate/:apparelType/:color/:logo", async(req,res)=>{
 
-    let { color, logo } = req.params;
+    let { color, logo, apparelType} = req.params;
     let colorsRGB;
     if (color.includes(',')) {
 
@@ -82,7 +84,7 @@ app.use("/generate/:color/:logo", async(req,res)=>{
         return;
     }
 
-    const img = await getGeneratedImageBuffer(colorsRGB, logo.toUpperCase());
+    const img = await getGeneratedImageBuffer(colorsRGB, logo.toUpperCase(),apparelType.toUpperCase());
 
     res.writeHead(200, {
         'Content-Type': 'image/png',
@@ -98,6 +100,21 @@ app.use('/', (_req, res) => {
 
     const index = fs.readFileSync(path.join(__dirname,"..","public","index.html"), "utf8");
     res.send(index
-        .replace(`<!--%VALIDLOGOS%-->`, validLogos.join(', ')));
+        .replace(`<!--%VALIDLOGOS%-->`, validLogos.join(', '))
+        .replace(`<!--%VALIDAPPAREL%-->`, validApparel.join(', '))
+        .replace(`<!--%GALLERY%-->`, `
+        <div>
+            ${[0,1,2,3,4,5,6].map(()=>{
+
+                let path = `/generate/${sample(validApparel)}/${sample(Object.keys(colors)).replaceAll(' ','')}/${sample(validLogos)}`;
+
+                return `
+                
+                    <a href=${path}><img width=300 height=300 src="${path}"/></a>
+                `
+
+            })}        
+        </div>
+        `));
 
 });

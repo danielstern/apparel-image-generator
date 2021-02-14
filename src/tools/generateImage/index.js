@@ -6,10 +6,10 @@ import { colorizeRGB } from "../../filters/colorize";
 
 import apparel from "../../../config/apparel.json";
 
-export async function getGeneratedImageBuffer([red,green,blue], pepeType){
+export async function getGeneratedImageBuffer([red,green,blue], pepeType, apparelType){
 
-    let apparelType = `TSHIRT`;
-    let apparelObject = apparel.shirts[apparelType];
+    // let apparelType = `TSHIRT`;
+    let apparelObject = apparel.apparelTypes[apparelType];
     let logoObject = apparel.logos[pepeType];
     let canvas = createCanvas(1000, 1000);
 
@@ -28,12 +28,12 @@ export async function getGeneratedImageBuffer([red,green,blue], pepeType){
     
     let pepeImageObj = await loadImage(path.resolve(__dirname,'..','..','..','assets',logoObject.url));
 
-    let h = 400;
-    let w = 400;
+    let h = 400 * (logoObject.adjustScale || 1) * (apparelObject.adjustScale || 1);
+    let w = 400 * (logoObject.adjustScale || 1) * (apparelObject.adjustScale || 1);
     colorized.getContext('2d').drawImage(
         pepeImageObj, 
-        apparelObject.centerX - w / 2,
-        apparelObject.centerY - h / 2,
+        (apparelObject.centerX - w / 2) + (logoObject.adjustHorizontalPosition || 0) * w,
+        (apparelObject.centerY - h / 2) + (logoObject.adjustVerticalPosition || 0) * h,
         w,
         h
     );

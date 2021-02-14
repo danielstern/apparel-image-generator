@@ -5,14 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "nodemon --exec \"babel-node src/index.spec\"",
-    "start" : "nodemon --exec \"babel-node src\""
+    "start": "nodemon --exec \"babel-node src\""
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "canvas": "^2.6.1",
     "express": "^4.17.1",
-    "hex-rgb": "^4.2.0"
+    "hex-rgb": "^4.2.0",
+    "lodash": "^4.17.20"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.16",

@@ -17,7 +17,7 @@
 
     <div>
         <!-- <code><h3>/generate[?argument1=a&argument2=b&...]</h3></code> -->
-        <a href="/generate/sandybrown/CLEVER"><code><h3>/generate/:color/:logo <button>GO TO EXAMPLE</button></h3></code> </a>
+        <a href="/generate/tshirt/limegreen/CLEVER"><code><h3>/generate/:apparelType/:color/:logo <button>GO TO EXAMPLE</button></h3></code> </a>
         <p>
             Generates a colorized image based on the provided criteria
         </p>
@@ -34,6 +34,30 @@
                         Example
                     </td>
                 </tr>
+
+                <tr>
+                    <td>
+                        Apparel Type
+                    </td>
+                    <td>
+                        <p>
+                        The type of clothing or apparel to use as a base.
+                        </p>
+                        <p>
+                            Valid options: 
+                            <!--%VALIDAPPAREL%-->
+                        </p>
+                    </td>
+                    <td>
+                        <div>
+                            <code>TSHIRT</code>
+                        </div>
+                        <div>
+                            <code>hoodie</code>
+                        </div>
+                    </td>
+                </tr>
+               
                 <tr>
                     <td>
                         Color
@@ -52,7 +76,7 @@
                             <code>6,72,24</code>
                         </div>
                         <div>
-                            <code>purple</code>
+                            <code>PURPLE</code>
                         </div>
                         <div>
                             <code>sandybrown</code>
@@ -73,10 +97,16 @@
                         </p>
                     </td>
                     <td>
-                        <code>/generate/0,255,0/CLEVER</code>
+                        <div>
+                        <code>CLEVER</code>
+                    </div>
+                        <code>sad</code>
                     </td>
                 </tr>
             </table>
         </div>
     </div>
+
+    <h2>Gallery</h2>
+    <!--%GALLERY%-->
 </body>

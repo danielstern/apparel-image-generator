@@ -1,17 +1,39 @@
 {
-    "shirts":{
+    "apparelTypes":{
         "TSHIRT":{
             "url":"shirt-red.png",
             "centerX": 500,
-            "centerY": 500
+            "centerY": 500,
+            "adjustScale":1.1
+        },
+        "HOODIE":{
+            "url":"hoodie-red.png",
+            "centerX": 500,
+            "centerY": 500,
+            "adjustScale":0.8
         }
     },
     "logos":{
         "CLEVER":{
-            "url":"pepe-clever-pre.png"
+            "url":"pepe-clever-pre.png",
+            "adjustHorizontalPosition":0.16,
+            "adjustScale":1
         },
         "SAD":{
-            "url":"very-sad-pepe-pre.png"
+            "url":"very-sad-pepe-pre.png",
+            "adjustScale":1.2,
+            "adjustVerticalPosition":-0.2,
+            "adjustHorizontalPosition":-0.1
+
+        },
+        "VERYSAD":{
+            "url":"pepe-reaching-child.png",
+            "adjustVerticalPosition":-0.2,
+            "adjustHorizontalPosition":0.1
+        },
+        "DUCK":{
+            "url":"smiling-duck-pepe-4k.png",
+            "adjustScale":0.9
         }
     }
 }
