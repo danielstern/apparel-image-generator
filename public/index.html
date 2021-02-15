@@ -17,7 +17,7 @@
 
     <div>
         <!-- <code><h3>/generate[?argument1=a&argument2=b&...]</h3></code> -->
-        <a href="/generate/tshirt/limegreen/CLEVER"><code><h3>/generate/:apparelType/:color/:logo <button>GO TO EXAMPLE</button></h3></code> </a>
+        <a href="/generate/tshirt/limegreen/CLEVER?format=JPEG"><code><h3>/generate/:apparelType/:color/:logo[?format=...] <button>GO TO EXAMPLE</button></h3></code> </a>
         <p>
             Generates a colorized image based on the provided criteria
         </p>
@@ -104,9 +104,39 @@
                     </td>
                 </tr>
             </table>
+
+            <table>
+                <tr>
+                    <td>
+                        Query name
+                    </td>
+                    <td>
+                        Description
+                    </td>
+                    <td>
+                        Example
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        format
+                    </td>
+                    <td>
+                        The format of the image served
+                    </td>
+                    <td>
+                        <code>http://localhost:7781/generate/tshirt/limegreen/CLEVER?format=JPEG</code>
+
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 
     <h2>Gallery</h2>
     <!--%GALLERY%-->
+
+    
+    <h3>Cache Test</h3>
+    <!--%CACHETEST%-->
 </body>

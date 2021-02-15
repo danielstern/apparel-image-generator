@@ -4,23 +4,32 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon --exec \"babel-node src/index.spec\"",
-    "start": "nodemon --exec \"babel-node src\""
+    "start": "npm run build && node bin",
+    "test": "nodemon --exec \"babel-node src\"",
+    "build": "webpack"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "app-root-path": "^3.0.0",
     "canvas": "^2.6.1",
     "express": "^4.17.1",
     "hex-rgb": "^4.2.0",
-    "lodash": "^4.17.20"
+    "jpeg-js": "^0.4.3",
+    "lodash": "^4.17.20",
+    "mongodb": "^3.6.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.16",
     "@babel/core": "^7.12.16",
     "@babel/node": "^7.12.16",
+    "@babel/plugin-transform-runtime": "^7.4.4",
     "@babel/preset-env": "^7.12.16",
+    "babel-loader": "^8.0.5",
     "nodemon": "^2.0.7",
-    "serve-index": "^1.9.1"
+    "serve-index": "^1.9.1",
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3",
+    "webpack-node-externals": "^2.5.2"
   }
 }

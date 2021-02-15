@@ -2,22 +2,26 @@ import express from "express";
 import { sample } from "lodash";
 import path from "path";
 import fs from 'fs';
+import jpeg from 'jpeg-js';
 
 import { getGeneratedImageBuffer } from "./tools/generateImage";
 import colors from '../config/colors.json';
 import apparel from '../config/apparel.json';
 import hexRgb from "hex-rgb";
+import { getCollection } from "./database";
 
-const PORT = process.env.PORT || 7780;
+const PORT = process.env.PORT || 7781;
 const app = new express();
 const validLogos = Object.keys(apparel.logos);
 const validApparel = Object.keys(apparel.apparelTypes);
+
+var appRoot = require('app-root-path');
 
 function colorSearch(color) {
 
     for (let key in colors) {
 
-        if (key.toUpperCase().replaceAll(' ', '') === color.toUpperCase()) {
+        if (key.toUpperCase().replace(/ /g, '') === color.toUpperCase()) {
 
             return colors[key];
 
@@ -43,8 +47,24 @@ app.use("/color-index", async(_req, res)=>{
 
 app.use("/generate/:apparelType/:color/:logo", async(req,res)=>{
 
-    let { color, logo, apparelType} = req.params;
+    const collection = await getCollection("pepe-store","images");
+    const query = {...req.query, ... req.params};
+    console.log("Record query?", query);
+    const record = await collection.findOne(query);
+
+    if (record) {
+
+        console.log("FOUND CACHED", record);
+    }
+    // return;
+
+
+
+    const format = (req.query.format && req.query.format.toUpperCase() === "PNG") ? "PNG" :"JPEG";
+
+    let { color, logo, apparelType } = req.params;
     let colorsRGB;
+    
     if (color.includes(',')) {
 
         colorsRGB = color.split(',');
@@ -84,21 +104,39 @@ app.use("/generate/:apparelType/:color/:logo", async(req,res)=>{
         return;
     }
 
-    const img = await getGeneratedImageBuffer(colorsRGB, logo.toUpperCase(),apparelType.toUpperCase());
+    const [buffer, imgData, jpegURL] = await getGeneratedImageBuffer(colorsRGB, logo.toUpperCase(),apparelType.toUpperCase());
 
-    res.writeHead(200, {
-        'Content-Type': 'image/png',
-        'Content-Length': img.length
-    });
+    if (format === "JPEG") {
+  
+        var jpegImageData = jpeg.encode(imgData, 50);   
 
-    res.end(img); 
+        res.writeHead(200, {
+            'Content-Type': 'image/jpeg',
+            'Content-Length': jpegImageData.data.length
+        });
+    
+        res.end(jpegImageData.data, 'binary'); 
 
+    } else {
+
+        res.writeHead(200, {
+            'Content-Type': 'image/png',
+            'Content-Length': buffer.length
+        });
+    
+        res.end(buffer); ;
+
+    }
+
+    collection.insertOne({...query, buffer});
 
 });
 
 app.use('/', (_req, res) => {
 
-    const index = fs.readFileSync(path.join(__dirname,"..","public","index.html"), "utf8");
+    const _path = path.resolve(appRoot.path,"public","index.html");
+    const index = fs.readFileSync(_path, "utf8");
+
     res.send(index
         .replace(`<!--%VALIDLOGOS%-->`, validLogos.join(', '))
         .replace(`<!--%VALIDAPPAREL%-->`, validApparel.join(', '))
@@ -106,7 +144,7 @@ app.use('/', (_req, res) => {
         <div>
             ${[0,1,2,3,4,5,6].map(()=>{
 
-                let path = `/generate/${sample(validApparel)}/${sample(Object.keys(colors)).replaceAll(' ','')}/${sample(validLogos)}`;
+                let path = `/generate/${sample(validApparel)}/${sample(Object.keys(colors)).replace(/ /g,'')}/${sample(validLogos)}?format=${sample(["PNG","JPEG"])}`;
 
                 return `
                 
@@ -115,6 +153,25 @@ app.use('/', (_req, res) => {
 
             })}        
         </div>
-        `));
+        `)
+        .replace(`<!--%CACHETEST%-->`,()=>{
+
+            let path = `/generate/${sample(validApparel)}/${sample(Object.keys(colors)).replace(/ /g,'')}/${sample(validLogos)}?format=${sample(["PNG","JPEG"])}`;
+            
+            return `
+        <div>
+            ${[0,1,2,3,4,5,6,7,8,9,10].map(()=>{
+
+                
+
+                return `
+                
+                    <a href=${path}><img width=100 height=100 src="${path}"/></a>
+                `
+
+            })}        
+        </div>
+        `})
+    );
 
 });

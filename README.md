@@ -21,3 +21,6 @@ As a further example, you decide to make a slight change to the sweater you just
 2. Install dependencies `npm install`
 3. Start server `npm start`
 4. Access `http://localhost:7780/`
+
+    // "build": "./nod/.bin/babel src/index.js -o bin/index.js",
+//

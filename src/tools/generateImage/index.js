@@ -6,39 +6,48 @@ import { colorizeRGB } from "../../filters/colorize";
 
 import apparel from "../../../config/apparel.json";
 
+import { path as root } from 'app-root-path';
+
 export async function getGeneratedImageBuffer([red,green,blue], pepeType, apparelType){
 
-    // let apparelType = `TSHIRT`;
-    let apparelObject = apparel.apparelTypes[apparelType];
-    let logoObject = apparel.logos[pepeType];
-    let canvas = createCanvas(1000, 1000);
+    let apparelDefinition = apparel.apparelTypes[apparelType];
+    let logoDefinition = apparel.logos[pepeType];
 
-    let shirtImageObj = await loadImage(path.resolve(__dirname,'..','..','..','assets',apparelObject.url));
+    let apparelImage = await loadImage(path.resolve(root,'assets',apparelDefinition.url));
+    let logoImage = await loadImage(path.resolve(root,'assets',logoDefinition.url));
 
-    canvas.getContext("2d").drawImage(
-        shirtImageObj, 
+
+    let mainCanvas = createCanvas(1000, 1000);
+    let colorizeCanvas = createCanvas(1000, 1000); 
+    let ctx = mainCanvas.getContext("2d");
+
+    ctx.fillStyle ="#FFFFFF";
+    ctx.fillRect(0,0,1000,1000);
+
+    colorizeCanvas.getContext("2d").drawImage(
+        apparelImage, 
         0,
         0,
         1000 ,
         1000
     );
 
-    const greyed = desaturate(canvas);
+    const greyed = desaturate(colorizeCanvas);
     const colorized = colorizeRGB(greyed, {red,green,blue});
-    
-    let pepeImageObj = await loadImage(path.resolve(__dirname,'..','..','..','assets',logoObject.url));
 
-    let h = 400 * (logoObject.adjustScale || 1) * (apparelObject.adjustScale || 1);
-    let w = 400 * (logoObject.adjustScale || 1) * (apparelObject.adjustScale || 1);
+    let h = 400 * (logoDefinition.adjustScale || 1) * (apparelDefinition.adjustScale || 1);
+    let w = 400 * (logoDefinition.adjustScale || 1) * (apparelDefinition.adjustScale || 1);
     colorized.getContext('2d').drawImage(
-        pepeImageObj, 
-        (apparelObject.centerX - w / 2) + (logoObject.adjustHorizontalPosition || 0) * w,
-        (apparelObject.centerY - h / 2) + (logoObject.adjustVerticalPosition || 0) * h,
+        logoImage, 
+        (apparelDefinition.centerX - w / 2) + (logoDefinition.adjustHorizontalPosition || 0) * w,
+        (apparelDefinition.centerY - h / 2) + (logoDefinition.adjustVerticalPosition || 0) * h,
         w,
         h
     );
 
-    var buffer = colorized.toBuffer();
-    return buffer;
+    mainCanvas.getContext('2d').drawImage(colorized, 0, 0);
+
+    var buffer = mainCanvas.toBuffer();
+    return [buffer, mainCanvas.getContext('2d').getImageData(0,0,1000,1000)];
 
 }
