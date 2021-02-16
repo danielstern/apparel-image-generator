@@ -48,17 +48,32 @@ app.use("/color-index", async(_req, res)=>{
 app.use("/generate/:apparelType/:color/:logo", async(req,res)=>{
 
     const collection = await getCollection("pepe-store","images");
-    const query = {...req.query, ... req.params};
-    console.log("Record query?", query);
-    const record = await collection.findOne(query);
+
+    const query = {
+        color:req.params.color,
+        logo:req.params.logo,
+        apparelType:req.params.color,
+        format: req.query.format
+        
+    };
+
+    const record = req.query.noCache ? null : await collection.findOne(query);
 
     if (record) {
 
-        console.log("FOUND CACHED", record);
+        res.writeHead(200, {
+            'Content-Type': record.format === "JPEG" ? 'image/jpeg' : 'image/png',
+            'Content-Length': record.buffer.buffer.length
+        });
+    
+        res.end(record.buffer.buffer, 'binary'); 
+        return;
+
+    } else {
+
+        // console.log("No cached example found", query);
+
     }
-    // return;
-
-
 
     const format = (req.query.format && req.query.format.toUpperCase() === "PNG") ? "PNG" :"JPEG";
 
@@ -104,7 +119,7 @@ app.use("/generate/:apparelType/:color/:logo", async(req,res)=>{
         return;
     }
 
-    const [buffer, imgData, jpegURL] = await getGeneratedImageBuffer(colorsRGB, logo.toUpperCase(),apparelType.toUpperCase());
+    const [buffer, imgData] = await getGeneratedImageBuffer(colorsRGB, logo.toUpperCase(),apparelType.toUpperCase());
 
     if (format === "JPEG") {
   
@@ -160,13 +175,13 @@ app.use('/', (_req, res) => {
             
             return `
         <div>
-            ${[0,1,2,3,4,5,6,7,8,9,10].map(()=>{
+            ${[0,1,2,3,4,5,6,7,8,9,10].map((i)=>{
 
                 
 
                 return `
                 
-                    <a href=${path}><img width=100 height=100 src="${path}"/></a>
+                    <a href=${path}&nonsec=${i+i}><img width=100 height=100 src="${path}&nonsec=${i}"/></a>
                 `
 
             })}        
